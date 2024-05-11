@@ -21,4 +21,8 @@ public:
 	int& getTurnNum() {
 		return turnNum;
 	}
+
+	void simulateTurn() {
+		turnNum++;
+	}
 };

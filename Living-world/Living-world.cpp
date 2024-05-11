@@ -2,9 +2,31 @@
 #include "World.h"
 #include <cstdlib>
 #include <conio.h>
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <unistd.h>
+#endif
 
-static void printWorld(std::vector<std::vector<int>>& map, int& turnNum) {
-    std::cout << "| Turn number: " << turnNum << std::endl << std::endl;
+bool keyPressed() {
+    #ifdef _WIN32
+        return _kbhit();
+    #else
+        return kbhit();
+    #endif
+}
+
+void sleep(int milliseconds) {
+    #ifdef _WIN32
+        Sleep(milliseconds);
+    #else
+        usleep(milliseconds * 1000);
+    #endif
+}
+
+static void printWorld(const std::vector<std::vector<int>>& map, int& turnNum, int& speed) {
+    std::cout << "| Simulation speed: " << speed << std::endl;
+    std::cout << "| Turn number: " << turnNum << std::endl;
 
     std::cout << "+";
     for (size_t i = 0; i < map[0].size() * 2 + 1; ++i) {
@@ -30,31 +52,32 @@ static void printWorld(std::vector<std::vector<int>>& map, int& turnNum) {
 int main()
 {
     World world("world", 40, 80);
+    int speed = 2000;
+
     while (true) {
         system("cls");
-        printWorld(world.getWorldMap(), world.getTurnNum());
-        std::cout << "| Operations: " << std::endl;
-        std::cout << "| 1. Simulate next turn." << std::endl;
-        std::cout << "| 2. Simulate next 10 turns." << std::endl;
-        std::cout << "| 3. Exit." << std::endl;
-        std::cout << "| Option: ";
+        std::cout << "| Operations:   1. SpeedUp   2. SlownDown   3. Exit" << std::endl << std::endl;
+        printWorld(world.getWorldMap(), world.getTurnNum(), speed);
 
-        char option = _getch();
+        if (keyPressed()) {
+            char option = _getch();
 
-        switch (option) {
+            switch (option) {
             case '1':
-                // 1 TURA FUNKCJA
-                std::cout << 1 << std::endl;
+                if (speed > 500) speed -= 250;
                 break;
             case '2':
-                // 10 TUR FUNKCJA
-                std::cout << 10 << std::endl;
+                speed += 250;
                 break;
             case '3':
                 std::cout << "Exiting." << std::endl;
                 return 0;
             default:
                 break;
+            }
         }
+
+        world.simulateTurn();
+        sleep(speed);
     }
 }
