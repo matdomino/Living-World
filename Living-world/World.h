@@ -10,19 +10,19 @@ private:
 
 public:
 	World(std::string name, int sizeY, int sizeX) {
-		worldName = name;
-		map.resize(sizeY, std::vector<int>(sizeX));
+		this -> worldName = name;
+		this -> map.resize(sizeY, std::vector<int>(sizeX));
 	}
 
 	std::vector<std::vector<int>>& getWorldMap() {
-		return map;
+		return this -> map;
 	}
 
 	int& getTurnNum() {
-		return turnNum;
+		return this -> turnNum;
 	}
 
 	void simulateTurn() {
-		turnNum++;
+		this -> turnNum++;
 	}
 };
