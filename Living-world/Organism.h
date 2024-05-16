@@ -10,8 +10,8 @@ struct Ancestor {
 
 class Organism {
 	private:
-		int power;
-		int health;
+		int turnsSurvived;
+		int lifeSpan;
 		std::string organismId;
 		World world;
 		std::unordered_map<std::string, Ancestor> ancestors;
@@ -25,5 +25,7 @@ class Organism {
 			for (Organism& descendant : descendants) {
 				descendant.ancestorDied(this->organismId, world.getTurnNum());
 			}
+
+			delete this;
 		};
 };
