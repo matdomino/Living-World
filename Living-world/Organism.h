@@ -9,7 +9,7 @@ struct Ancestor {
 };
 
 class Organism {
-	private:
+	protected:
 		int turnsSurvived;
 		int lifeSpan;
 		std::string organismId;
