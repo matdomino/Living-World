@@ -2,30 +2,23 @@
 #include "World.h"
 #include <cstdlib>
 #include <conio.h>
+#include "Organism.h"
+#include "Grass.h"
 #ifdef _WIN32
     #include <windows.h>
 #else
     #include <unistd.h>
 #endif
 
-bool keyPressed() {
-    #ifdef _WIN32
-        return _kbhit();
-    #else
-        return kbhit();
-    #endif
+static void clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
 }
 
-void sleep(int milliseconds) {
-    #ifdef _WIN32
-        Sleep(milliseconds);
-    #else
-        usleep(milliseconds * 1000);
-    #endif
-}
-
-static void printWorld(const std::vector<std::vector<int>>& map, int& turnNum, int& speed) {
-    std::cout << "| Simulation speed: " << speed << std::endl;
+static void printWorld(const std::vector<std::vector<Organism*>>& map, int& turnNum) {
     std::cout << "| Turn number: " << turnNum << std::endl;
 
     std::cout << "+";
@@ -37,7 +30,12 @@ static void printWorld(const std::vector<std::vector<int>>& map, int& turnNum, i
     for (size_t i = 0; i < map.size(); ++i) {
         std::cout << "| ";
         for (size_t j = 0; j < map[i].size(); ++j) {
-            std::cout << map[i][j] << " ";
+            if (map[i][j] != nullptr) {
+                std::cout << map[i][j]->getChar() << " ";
+            }
+            else {
+                std::cout << "  ";
+            }
         }
         std::cout << "|" << std::endl;
     }
@@ -51,33 +49,38 @@ static void printWorld(const std::vector<std::vector<int>>& map, int& turnNum, i
 
 int main()
 {
-    World world("world", 40, 80);
-    int speed = 2000;
+    World world("world", 20, 20);
+
+    //// TEST
+    std::unordered_map<std::string, Ancestor> TestAncestors;
+    Grass testowaTrawa("superId", &world, TestAncestors);
 
     while (true) {
-        system("cls");
-        std::cout << "| Operations:   1. SpeedUp   2. SlownDown   3. Exit" << std::endl << std::endl;
-        printWorld(world.getWorldMap(), world.getTurnNum(), speed);
+        clearScreen();
+        std::cout << testowaTrawa.getChar();
+        std::cout << "| Operations:   1. Simulate next turn.   2. Simulate next 10 turns.   3. Show organisms list.   4. Exit." << std::endl << std::endl;
+        printWorld(world.getWorldMap(), world.getTurnNum());
 
-        if (keyPressed()) {
-            char option = _getch();
+        std::cout << "Option: ";
+        char option = _getch();
 
-            switch (option) {
-            case '1':
-                if (speed > 500) speed -= 250;
-                break;
-            case '2':
-                speed += 250;
-                break;
-            case '3':
-                std::cout << "Exiting." << std::endl;
-                return 0;
-            default:
-                break;
-            }
-        }
-
-        world.simulateTurn();
-        sleep(speed);
+        switch (option) {
+        case '1':
+            world.simulateTurn();
+            break;
+        case '2':
+            for (int i = 0; i < 10; i++) {
+                world.simulateTurn();
+            };
+            break;
+        case '3':
+            std::cout << "Ladna lista tu bedzie." << std::endl;
+            break;
+        case '4':
+            std::cout << "Exiting..." << std::endl;
+            return 0;
+        default:
+            break;
+        };
     }
 }
