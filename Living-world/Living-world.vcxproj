@@ -127,7 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dandelion.cpp" />
     <ClCompile Include="Living-world.cpp" />
+    <ClCompile Include="Organism.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Grass.h" />

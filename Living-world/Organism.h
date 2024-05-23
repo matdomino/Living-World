@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
-#include "World.h"
+#include <string>
 
 class World;
 
@@ -28,11 +28,5 @@ class Organism {
 			this -> ancestors[ancestorId].deathTurn = turn;
 		};
 
-		virtual void die() {
-			for (Organism& descendant : descendants) {
-				descendant.ancestorDied(this->organismId, this->world->getTurnNum());
-			}
-
-			delete this;
-		};
+		virtual void die();
 };
