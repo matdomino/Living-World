@@ -51,13 +51,8 @@ int main()
 {
     World world("world", 20, 20);
 
-    //// TEST
-    std::unordered_map<std::string, Ancestor> TestAncestors;
-    Grass testowaTrawa("superId", &world, TestAncestors);
-
     while (true) {
         clearScreen();
-        std::cout << testowaTrawa.getChar();
         std::cout << "| Operations:   1. Simulate next turn.   2. Simulate next 10 turns.   3. Show organisms list.   4. Exit." << std::endl << std::endl;
         printWorld(world.getWorldMap(), world.getTurnNum());
 

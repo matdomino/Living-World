@@ -2,9 +2,11 @@
 #include "Plant.h"
 
 class Grass : public Plant {
+private:
+	int idCounter = 1;
 public:
-	Grass(std::string givenOrganismId, World* givenWorld, std::unordered_map<std::string, Ancestor> givenAncestors)
-		: Plant(5, givenOrganismId, givenWorld, givenAncestors, 2, 3) {}
+	Grass(World* givenWorld, std::unordered_map<std::string, Ancestor> givenAncestors = std::unordered_map<std::string, Ancestor>())
+		: Plant(5, ("Grass" + std::to_string(++this->idCounter)), givenWorld, givenAncestors, 2, 3) {}
 
 	char getChar() {
 		return 'G';
