@@ -6,11 +6,25 @@ class Plant : public Organism {
 		int power = 0;
 		int reproducePower;
 		int powerLimit;
+		const bool isPoisonous;
 	public:
-		Plant(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::unordered_map<std::string, Ancestor> givenAncestors, int givenReproducePower, int givenPowerLimit)
-			: Organism(givenLifeSpan, givenOrganismId, givenWorld, givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit) {}
+		Plant(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::unordered_map<std::string, Ancestor> givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
+			: Organism(givenLifeSpan, givenOrganismId, givenWorld, givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit), isPoisonous(givenPoisonousStatus) {}
 
 		virtual char getChar() = 0;
+
+		std::string getDetails() {
+			return("Organism: " + this->organismId + "\n"
+				+ "Power: " + std::to_string(this->power) + " (max: " + std::to_string(this->powerLimit) + ")" + "\n"
+				+ "Minimal reproduce power level: " + std::to_string(this->reproducePower) + "\n"
+				+ "Survived rounds: " + std::to_string(this->turnsSurvived) + " (lifespan: " + std::to_string(this->lifeSpan) + ")" + "\n"
+				+ "Poisonous: " + std::to_string(this->isPoisonous) + "\n"
+				);
+		}
+
+		virtual bool getPoisonousStatus() {
+			return this->isPoisonous;
+		}
 
 		virtual void reproduce() {
 			// ma byc tutaj sprawdzenie czy ma miejsce na paczkowanie
@@ -20,9 +34,10 @@ class Plant : public Organism {
 		};
 
 		virtual void live() {
-			if (this->lifeSpan == this->turnsSurvived) {
-				this->die();
-			}
+			// Przerobic "umier
+			//if (this->lifeSpan == this->turnsSurvived) {
+			//	this->die();
+			//}
 
 			if (this->power >= this->reproducePower) {
 				this->reproduce();

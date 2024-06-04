@@ -47,6 +47,51 @@ static void printWorld(const std::vector<std::vector<Organism*>>& map, int& turn
     std::cout << "+" << std::endl << std::endl;
 }
 
+static void printDetails(const std::list<Organism*>& organisms) {
+    std::cout << std::endl << "| Choose organism: ";
+
+    std::string input;
+    std::getline(std::cin, input);
+
+    int selected_index;
+    try {
+        selected_index = std::stoi(input);
+    }
+    catch (const std::exception& e) {
+        selected_index = -1;
+    }
+
+    clearScreen();
+
+    std::cout << "| Details:" << std::endl << std::endl;
+
+    if (selected_index >= 0 && selected_index < organisms.size()) {
+        auto it = organisms.begin();
+        std::advance(it, selected_index);
+        std::cout << (*it)->getDetails();
+    }
+    else {
+        std::cout << "| Invalid option." << std::endl;
+    }
+
+    std::cout << std::endl << "| Press any key to return...";
+
+    _getch();
+}
+
+static void printOrganisms(const std::list<Organism*>& organisms) {
+    clearScreen();
+    std::cout << "| Organisms: " << std::endl << std::endl;
+
+    int index = 0;
+    for (Organism* organism : organisms) {
+        std::cout << index << ". " << organism->getId() << std::endl;
+        index++;
+    }
+
+    printDetails(organisms);
+}
+
 int main()
 {
     World world("world", 20, 20);
@@ -69,7 +114,7 @@ int main()
             };
             break;
         case '3':
-            std::cout << "Ladna lista tu bedzie." << std::endl;
+            printOrganisms(world.getOrganisms());
             break;
         case '4':
             std::cout << "Exiting..." << std::endl;

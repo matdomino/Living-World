@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include "Grass.h"
 #include "Dandelion.h"
+#include "Toadstool.h"
 
 class Organism;
 
@@ -33,7 +34,7 @@ private:
 		}
 	}
 
-	void spawnOrganisms(int dandelionNum, int grassNum) {
+	void spawnOrganisms(int dandelionNum, int grassNum, int toadstoolNum) {
 		std::srand(static_cast<unsigned int>(std::time(0)));
 		std::unordered_set<int> positions;
 		int sizeY = map.size();
@@ -41,17 +42,30 @@ private:
 
 		addOrganism<Grass>(dandelionNum, positions, sizeX, sizeY);
 		addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
+		addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
 	}
 
 public:
 	World(std::string name, int sizeY, int sizeX) {
 		this->worldName = name;
 		this->map.resize(sizeY, std::vector<Organism*>(sizeX, nullptr));
-		this->spawnOrganisms(5, 5);
+		this->spawnOrganisms(5, 5, 4);
 	}
 
 	std::vector<std::vector<Organism*>>& getWorldMap() {
 		return this->map;
+	}
+
+	std::list<Organism*> getOrganisms() {
+		std::list<Organism*> organisms;
+		for (const auto& row : this->map) {
+			for (Organism* organism : row) {
+				if (organism != nullptr) {
+					organisms.push_back(organism);
+				}
+			}
+		}
+		return organisms;
 	}
 
 	int& getTurnNum() {

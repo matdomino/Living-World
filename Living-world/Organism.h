@@ -24,9 +24,9 @@ class Organism {
 
 		virtual char getChar() = 0;
 
-		virtual void ancestorDied(const std::string& ancestorId, const int &turn) {
-			this -> ancestors[ancestorId].deathTurn = turn;
-		};
+		virtual std::string getDetails() = 0;
 
-		virtual void die();
+		virtual std::string getId() {
+			return this->organismId;
+		}
 };
