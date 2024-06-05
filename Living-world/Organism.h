@@ -1,14 +1,9 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
-#include <string>
+#include "Ancestor.h"
 
 class World;
-
-struct Ancestor {
-	int birthTurn;
-	int deathTurn;
-};
 
 class Organism {
 	protected:
@@ -16,15 +11,18 @@ class Organism {
 		const int lifeSpan;
 		const std::string organismId;
 		World* world;
-		std::unordered_map<std::string, Ancestor> ancestors;
-		std::vector<Organism> descendants;
+		std::list<Ancestor> ancestors;
 	public:
-		Organism(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::unordered_map<std::string, Ancestor> givenAncestors)
+		Organism(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::list<Ancestor> givenAncestors)
 			: lifeSpan(givenLifeSpan), organismId(givenOrganismId), world(givenWorld), ancestors(givenAncestors) {};
 
 		virtual char getChar() = 0;
 
 		virtual std::string getDetails() = 0;
+
+		virtual std::list<Ancestor> getAncestors() {
+			return this->ancestors;
+		}
 
 		virtual std::string getId() {
 			return this->organismId;

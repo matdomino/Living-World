@@ -1,11 +1,11 @@
 #pragma once
-#include <string>
 #include <vector>
 #include <ctime>
 #include <unordered_set>
 #include "Grass.h"
 #include "Dandelion.h"
 #include "Toadstool.h"
+#include "Ancestor.h"
 
 class Organism;
 
@@ -27,7 +27,11 @@ private:
 			int position = y * sizeX + x;
 
 			if (positions.find(position) == positions.end()) {
-				this->map[y][x] = new T(this);
+				std::list<Ancestor> newBloodLine;
+
+				Organism* newOrganism = new T(this, newBloodLine);
+
+				this->map[y][x] = newOrganism;
 				positions.insert(position);
 				number--;
 			}

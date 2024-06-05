@@ -8,7 +8,7 @@ class Plant : public Organism {
 		int powerLimit;
 		const bool isPoisonous;
 	public:
-		Plant(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::unordered_map<std::string, Ancestor> givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
+		Plant(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::list<Ancestor> givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
 			: Organism(givenLifeSpan, givenOrganismId, givenWorld, givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit), isPoisonous(givenPoisonousStatus) {}
 
 		virtual char getChar() = 0;

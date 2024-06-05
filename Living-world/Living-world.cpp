@@ -4,6 +4,7 @@
 #include <conio.h>
 #include "Organism.h"
 #include "Grass.h"
+#include "Ancestor.h"
 #ifdef _WIN32
     #include <windows.h>
 #else
@@ -47,6 +48,16 @@ static void printWorld(const std::vector<std::vector<Organism*>>& map, int& turn
     std::cout << "+" << std::endl << std::endl;
 }
 
+static void printAncestors (Organism* organism) {
+    std::list<Ancestor> ancestors = organism->getAncestors();
+
+    for (const Ancestor& ancestor : ancestors) {
+        std::cout << "Organism ID: " << ancestor.organismId << std::endl;
+        std::cout << "Birth Turn: " << ancestor.birthTurn << std::endl;
+        std::cout << "Death Turn: " << ancestor.deathTurn << std::endl;
+    }
+}
+
 static void printDetails(const std::list<Organism*>& organisms) {
     std::cout << std::endl << "| Choose organism: ";
 
@@ -69,6 +80,9 @@ static void printDetails(const std::list<Organism*>& organisms) {
         auto it = organisms.begin();
         std::advance(it, selected_index);
         std::cout << (*it)->getDetails();
+        
+        std::cout << std::endl << "| Ancestors: " << std::endl;
+        printAncestors(*it);
     }
     else {
         std::cout << "| Invalid option." << std::endl;
