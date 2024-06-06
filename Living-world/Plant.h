@@ -8,8 +8,8 @@ class Plant : public Organism {
 		int powerLimit; 
 		const bool isPoisonous;
 	public:
-		Plant(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::list<Ancestor>* givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
-			: Organism(givenLifeSpan, givenOrganismId, givenWorld, givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit), isPoisonous(givenPoisonousStatus) {}
+		Plant(int givenLifeSpan, std::string givenOrganismId, std::list<Ancestor>* givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
+			: Organism(givenLifeSpan, givenOrganismId, givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit), isPoisonous(givenPoisonousStatus) {}
 
 		virtual char getChar() = 0;
 
@@ -26,35 +26,28 @@ class Plant : public Organism {
 			return this->isPoisonous;
 		}
 
-		virtual void reproduce() {
-			// ma byc tutaj sprawdzenie czy ma miejsce na paczkowanie
-			// Losowanie miejsca gdzie sie stworzy nowy - tam gdzie mozna!!!!
+		virtual bool IsDying() {
+			if (this->lifeSpan == this->turnsSurvived) {
+				return true;
+			}
+		}
 
-			return;
-		};
-
-		virtual void die() {
-			delete this;
-
-			// dodac aktualizacje Ancestora
+		virtual bool CanReproduce() {
+			if (this->power >= this->reproducePower) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 
 		virtual void live() {
-			if (this->lifeSpan == this->turnsSurvived) {
-				this->world->removeOrganism(this);
-				this->die();
-			}
-
-			if (this->power >= this->reproducePower) {
-				this->reproduce();
-			}
-
 			if (this->powerLimit > this->power) {
 				power++;
 			}
 
 			this->turnsSurvived++;
-		};
+		}
 
 		virtual ~Plant() {}
 };

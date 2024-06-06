@@ -5,8 +5,8 @@ class Toadstool : public Plant {
 private:
 	static int idCounter;
 public:
-	Toadstool(World* givenWorld, std::list<Ancestor>* givenAncestors)
-		: Plant(12, ("Toadstool" + std::to_string(++this->idCounter)), givenWorld, givenAncestors, 4, 4, true) {}
+	Toadstool(std::list<Ancestor>* givenAncestors)
+		: Plant(12, ("Toadstool" + std::to_string(++this->idCounter)), givenAncestors, 4, 4, true) {}
 
 	char getChar() {
 		return 'T';

@@ -1,7 +1,5 @@
 #pragma once
 
-class World;
-
 #include <vector>
 #include <unordered_map>
 #include "Ancestor.h"
@@ -11,11 +9,10 @@ class Organism {
 		int turnsSurvived = 0;
 		const int lifeSpan;
 		const std::string organismId;
-		World* world;
 		std::list<Ancestor>* ancestors;
 	public:
-		Organism(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::list<Ancestor>* givenAncestors)
-			: lifeSpan(givenLifeSpan), organismId(givenOrganismId), world(givenWorld), ancestors(givenAncestors) {};
+		Organism(int givenLifeSpan, std::string givenOrganismId, std::list<Ancestor>* givenAncestors)
+			: lifeSpan(givenLifeSpan), organismId(givenOrganismId), ancestors(givenAncestors) {};
 
 		virtual char getChar() = 0;
 
@@ -30,4 +27,8 @@ class Organism {
 		}
 
 		virtual void live() = 0;
+
+		virtual bool IsDying() = 0;
+
+		virtual bool CanReproduce() = 0;
 };

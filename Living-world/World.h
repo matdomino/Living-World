@@ -2,6 +2,8 @@
 #include <vector>
 #include <ctime>
 #include <unordered_set>
+#include "Organism.h"
+#include "Plant.h"
 #include "Grass.h"
 #include "Dandelion.h"
 #include "Toadstool.h"
@@ -29,7 +31,7 @@ private:
 			if (positions.find(position) == positions.end()) {
 				std::list<Ancestor>* newBloodLine = new std::list<Ancestor>();;
 
-				Organism* newOrganism = new T(this, newBloodLine);
+				Organism* newOrganism = new T(newBloodLine);
 
 				newBloodLine->push_back(Ancestor(newOrganism->getId(), this->turnNum, -1));;
 
@@ -76,17 +78,6 @@ public:
 
 	int& getTurnNum() {
 		return this->turnNum;
-	}
-
-	void removeOrganism(Organism* organism) {
-		for (auto& row : map) {
-			for (Organism*& currentOrganism : row) {
-				if (currentOrganism == organism) {
-					currentOrganism = nullptr;
-					return;
-				}
-			}
-		}
 	}
 
 	void simulateTurn() {
