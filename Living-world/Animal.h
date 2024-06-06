@@ -18,6 +18,7 @@ class Animal : public Organism {
 				+ "Power: " + std::to_string(this->power) + " (max: " + std::to_string(this->powerLimit) + ")" + "\n"
 				+ "Minimal reproduce power level: " + std::to_string(this->reproducePower) + "\n"
 				+ "Survived rounds: " + std::to_string(this->turnsSurvived) + " (lifespan: " + std::to_string(this->lifeSpan) + ")" + "\n"
+				+ "Hunger Level: " + std::to_string(this->hungerLevel) + "\n"
 				+ "Is herbivorous: " + std::to_string(this->isHerbivorous) + "\n"
 				+ "Is carnivorous: " + std::to_string(this->isCarnivorous) + "\n"
 				);

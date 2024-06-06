@@ -51,9 +51,9 @@ private:
 		int sizeY = map.size();
 		int sizeX = map[0].size(); 
 
-		//<Grass>(dandelionNum, positions, sizeX, sizeY);
-		addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
-		//addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
+		//addOrganism<Grass>(dandelionNum, positions, sizeX, sizeY);
+		//addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
+		addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
 		addOrganism<Sheep>(sheepNum, positions, sizeX, sizeY);
 		//addOrganism<Wolf>(wolfNum, positions, sizeX, sizeY);
 	}
@@ -62,7 +62,7 @@ public:
 	World(std::string name, int sizeY, int sizeX) {
 		this->worldName = name;
 		this->map.resize(sizeY, std::vector<Organism*>(sizeX, nullptr));
-		this->spawnOrganisms(5, 5, 4, 30, 4);
+		this->spawnOrganisms(5, 5, 10, 10, 10);
 	}
 
 	std::vector<std::vector<Organism*>>& getWorldMap() {
@@ -191,6 +191,54 @@ public:
 		}
 	}
 
+	void tryToEat(int y, int x, Animal* animal) {
+		std::vector<std::pair<int, int>> directions = { {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} };
+
+		if (animal->getHerbivorousStatus()) {
+			for (const auto& direction : directions) {
+				int newY = y + direction.first;
+				int newX = x + direction.second;
+
+				if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size() && map[newY][newX] != nullptr) {
+					if (Plant* plant = dynamic_cast<Plant*>(map[newY][newX])) {
+						animal->feed();
+						bool isAnimalPoisoned = plant->getPoisonousStatus();
+
+						delete plant;
+						map[newY][newX] = nullptr;
+
+
+						// COS TU JEST NIE TAK
+						if (isAnimalPoisoned) {
+							delete animal;
+							map[y][x] = nullptr;
+						}
+						break;
+					}
+				}
+			}
+			
+		} else if (animal->getCarnivorousStatus()) {
+			for (const auto& direction : directions) {
+				int newY = y + direction.first;
+				int newX = x + direction.second;
+
+				if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size() && map[newY][newX] != nullptr) {
+					if (Animal* prey = dynamic_cast<Animal*>(map[newY][newX])) {
+						if (typeid(*prey) != typeid(*animal)) {
+							animal->feed();
+
+							delete prey;
+							map[newY][newX] = nullptr;
+
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	void simulateTurn() {
 		this->turnNum++;
 		std::vector<std::pair<int, int>> toDelete;
@@ -221,6 +269,7 @@ public:
 			int x = pos.second;
 			if (Animal* animal = dynamic_cast<Animal*>(map[y][x])) {
 				walk(y, x, animal);
+				tryToEat(y, x, animal);
 			}
 		}
 
