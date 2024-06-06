@@ -26,11 +26,18 @@ class Plant : public Organism {
 			return this->isPoisonous;
 		}
 
-		virtual bool IsDying() {
+		virtual bool IsDying(int turn) {
 			if (this->lifeSpan == this->turnsSurvived) {
+
+				for (auto& ancestor : *this->ancestors) {
+					if (ancestor.organismId == this->organismId) {
+						ancestor.deathTurn = turn;
+						break;
+					}
+				}
+
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
@@ -38,8 +45,7 @@ class Plant : public Organism {
 		virtual bool CanReproduce() {
 			if (this->power >= this->reproducePower) {
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
@@ -52,5 +58,7 @@ class Plant : public Organism {
 			this->turnsSurvived++;
 		}
 
-		virtual ~Plant() {}
+		virtual void reproduced() {
+			this->power -= this->reproducePower;
+		}
 };

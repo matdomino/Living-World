@@ -54,7 +54,7 @@ static void printAncestors (Organism* organism) {
     for (const Ancestor& ancestor : *ancestors) {
         std::cout << "Organism ID: " << ancestor.organismId << std::endl;
         std::cout << "Birth Turn: " << ancestor.birthTurn << std::endl;
-        std::cout << "Death Turn: " << ancestor.deathTurn << std::endl;
+        std::cout << "Death Turn: " << ancestor.deathTurn << std::endl << std::endl;
     }
 }
 

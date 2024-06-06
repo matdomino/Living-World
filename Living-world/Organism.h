@@ -28,11 +28,26 @@ class Organism {
 
 		virtual void live() = 0;
 
-		virtual bool IsDying() = 0;
+		virtual bool IsDying(int turn) {
+			if (this->lifeSpan == this->turnsSurvived) {
+
+				for (auto& ancestor : *this->ancestors) {
+					if (ancestor.organismId == this->organismId) {
+						ancestor.deathTurn = turn;
+						break;
+					}
+				}
+
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 
 		virtual bool CanReproduce() = 0;
 
-		virtual ~Organism() {
-			// ZROBIC AKTUALIZACJE REKORDU W ANCESTORS
-		}
+		virtual void reproduced() = 0;
+
+		virtual ~Organism() {}
 };

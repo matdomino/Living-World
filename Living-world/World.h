@@ -48,8 +48,8 @@ private:
 		int sizeY = map.size();
 		int sizeX = map[0].size();
 
-		addOrganism<Grass>(dandelionNum, positions, sizeX, sizeY);
-		addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
+		// addOrganism<Grass>(dandelionNum, positions, sizeX, sizeY);
+		// addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
 		addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
 	}
 
@@ -81,10 +81,6 @@ public:
 	}
 
 	void reproduce(int y, int x) {
-		// sprawdzenie czy moze sie swtorzyc - jesli nie to nic
-		// jesli tak to stworz obiekt na mapie i odejmij power
-		// PRZEKAZAC ROWNIEZ BLOODLINE!
-
 		std::vector<std::pair<int, int>> emptyPositions;
 		std::vector<std::pair<int, int>> directions = { {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} };
 
@@ -101,17 +97,26 @@ public:
 			std::pair<int, int> newPosition = emptyPositions[generateIndex(0, emptyPositions.size() - 1)];
 
 			Organism* parent = map[y][x];
-			std::list<Ancestor>* bloodLine = *parent->getBloodLine();
+			std::list<Ancestor>* bloodLine = parent->getAncestors();
 
-			// TU ZMIENIC ZEBY SPRAWDZALO JAKIEGO TYPU JEST parent i utworzylo nowy
-			Organism* newOrganism = parent->clone(newBloodLine);
+			Organism* newOrganism = nullptr;
+			if (dynamic_cast<Grass*>(parent)) {
+				newOrganism = new Grass(bloodLine);
+			}
+			else if (dynamic_cast<Dandelion*>(parent)) {
+				newOrganism = new Dandelion(bloodLine);
+			}
+			else if (dynamic_cast<Toadstool*>(parent)) {
+				newOrganism = new Toadstool(bloodLine);
+			}
 
-			bloodLine->push_back(Ancestor(newOrganism->getId(), this->turnNum, newOrganism->getId()));
+			if (newOrganism != nullptr) {
+				bloodLine->push_back(Ancestor(newOrganism->getId(), this->turnNum, -1));
 
-			map[newPosition.first][newPosition.second] = newOrganism;
+				map[newPosition.first][newPosition.second] = newOrganism;
 
-			// DODAC REDUKCJE POWER
-
+				parent->reproduced();
+			}
 		}
 	}
 
@@ -123,14 +128,14 @@ public:
 			for (int x = 0; x < map[y].size(); x++) {
 				Organism* organism = map[y][x];
 				if (organism != nullptr) {
-					if (organism->IsDying()) {
+					if (organism->IsDying(this->turnNum)) {
 						toDelete.push_back({ y, x });
 					} else {
-						organism->live();
-
 						if (organism->CanReproduce()) {
-							// reproduce(y, x);
+							reproduce(y, x);
 						}
+
+						organism->live();
 					}
 				}
 			}
