@@ -8,8 +8,9 @@
 #include "Dandelion.h"
 #include "Toadstool.h"
 #include "Ancestor.h"
-
-class Organism;
+#include "Animal.h"
+#include "Sheep.h"
+#include "Wolf.h"
 
 inline int generateIndex(int min, int max) {
 	return min + rand() % (max - min + 1);
@@ -42,7 +43,7 @@ private:
 		}
 	}
 
-	void spawnOrganisms(int dandelionNum, int grassNum, int toadstoolNum) {
+	void spawnOrganisms(int dandelionNum, int grassNum, int toadstoolNum, int sheepNum, int wolfNum) {
 		std::srand(static_cast<unsigned int>(std::time(0)));
 		std::unordered_set<int> positions;
 		int sizeY = map.size();
@@ -50,14 +51,16 @@ private:
 
 		// addOrganism<Grass>(dandelionNum, positions, sizeX, sizeY);
 		// addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
-		addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
+		// addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
+		// addOrganism<Sheep>(sheepNum, positions, sizeX, sizeY);
+		addOrganism<Wolf>(wolfNum, positions, sizeX, sizeY);
 	}
 
 public:
 	World(std::string name, int sizeY, int sizeX) {
 		this->worldName = name;
 		this->map.resize(sizeY, std::vector<Organism*>(sizeX, nullptr));
-		this->spawnOrganisms(5, 5, 4);
+		this->spawnOrganisms(5, 5, 4, 30, 3);
 	}
 
 	std::vector<std::vector<Organism*>>& getWorldMap() {
@@ -84,37 +87,84 @@ public:
 		std::vector<std::pair<int, int>> emptyPositions;
 		std::vector<std::pair<int, int>> directions = { {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} };
 
-		for (const auto& direction : directions) {
-			int newY = y + direction.first;
-			int newX = x + direction.second;
+		Organism* parent = map[y][x];
+		std::list<Ancestor>* bloodLine = parent->getAncestors();
 
-			if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size() && map[newY][newX] == nullptr) {
-				emptyPositions.push_back({ newY, newX });
+		if (Animal* animal = dynamic_cast<Animal*>(parent)) {
+			bool foundPartner = false;
+			if (Sheep* sheep = dynamic_cast<Sheep*>(animal)) {
+				for (const auto& direction : directions) {
+					int newY = y + direction.first;
+					int newX = x + direction.second;
+
+					if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size() && map[newY][newX] != nullptr) {
+						if (Sheep* partner = dynamic_cast<Sheep*>(map[newY][newX])) {
+							foundPartner = true;
+							break;
+						}
+					}
+				}
+			}
+
+			else if (Wolf* wolf = dynamic_cast<Wolf*>(animal)) {
+				for (const auto& direction : directions) {
+					int newY = y + direction.first;
+					int newX = x + direction.second;
+
+					if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size() && map[newY][newX] != nullptr) {
+						if (Wolf* partner = dynamic_cast<Wolf*>(map[newY][newX])) {
+							foundPartner = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if (foundPartner) {
+				for (const auto& direction : directions) {
+					int newY = y + direction.first;
+					int newX = x + direction.second;
+
+					if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size() && map[newY][newX] == nullptr) {
+						emptyPositions.push_back({ newY, newX });
+					}
+				}
+			}
+		}
+		else {
+			for (const auto& direction : directions) {
+				int newY = y + direction.first;
+				int newX = x + direction.second;
+
+				if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size() && map[newY][newX] == nullptr) {
+					emptyPositions.push_back({ newY, newX });
+				}
 			}
 		}
 
 		if (!emptyPositions.empty()) {
 			std::pair<int, int> newPosition = emptyPositions[generateIndex(0, emptyPositions.size() - 1)];
 
-			Organism* parent = map[y][x];
-			std::list<Ancestor>* bloodLine = parent->getAncestors();
-
 			Organism* newOrganism = nullptr;
-			if (dynamic_cast<Grass*>(parent)) {
+			if (Grass* grass = dynamic_cast<Grass*>(parent)) {
 				newOrganism = new Grass(bloodLine);
 			}
-			else if (dynamic_cast<Dandelion*>(parent)) {
+			else if (Dandelion* dandelion = dynamic_cast<Dandelion*>(parent)) {
 				newOrganism = new Dandelion(bloodLine);
 			}
-			else if (dynamic_cast<Toadstool*>(parent)) {
+			else if (Toadstool* toadstool = dynamic_cast<Toadstool*>(parent)) {
 				newOrganism = new Toadstool(bloodLine);
+			}
+			else if (Sheep* sheep = dynamic_cast<Sheep*>(parent)) {
+				newOrganism = new Sheep(bloodLine);
+			}
+			else if (Wolf* wolf = dynamic_cast<Wolf*>(parent)) {
+				newOrganism = new Wolf(bloodLine);
 			}
 
 			if (newOrganism != nullptr) {
 				bloodLine->push_back(Ancestor(newOrganism->getId(), this->turnNum, -1));
-
 				map[newPosition.first][newPosition.second] = newOrganism;
-
 				parent->reproduced();
 			}
 		}
