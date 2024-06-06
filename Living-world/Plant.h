@@ -30,6 +30,9 @@ class Plant : public Organism {
 			if (this->lifeSpan == this->turnsSurvived) {
 				return true;
 			}
+			else {
+				return false;
+			}
 		}
 
 		virtual bool CanReproduce() {

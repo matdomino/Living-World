@@ -31,4 +31,8 @@ class Organism {
 		virtual bool IsDying() = 0;
 
 		virtual bool CanReproduce() = 0;
+
+		virtual ~Organism() {
+			// ZROBIC AKTUALIZACJE REKORDU W ANCESTORS
+		}
 };
