@@ -5,10 +5,10 @@ class Plant : public Organism {
 	protected:
 		int power = 0;
 		int reproducePower;
-		int powerLimit;
+		int powerLimit; 
 		const bool isPoisonous;
 	public:
-		Plant(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::list<Ancestor> givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
+		Plant(int givenLifeSpan, std::string givenOrganismId, World* givenWorld, std::list<Ancestor>* givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
 			: Organism(givenLifeSpan, givenOrganismId, givenWorld, givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit), isPoisonous(givenPoisonousStatus) {}
 
 		virtual char getChar() = 0;
@@ -33,16 +33,20 @@ class Plant : public Organism {
 			return;
 		};
 
+		virtual void die() {
+			delete this;
+
+			// dodac aktualizacje Ancestora
+		}
+
 		virtual void live() {
-			// Przerobic "umier
-			//if (this->lifeSpan == this->turnsSurvived) {
-			//	this->die();
-			//}
+			if (this->lifeSpan == this->turnsSurvived) {
+				this->world->removeOrganism(this);
+				this->die();
+			}
 
 			if (this->power >= this->reproducePower) {
 				this->reproduce();
-
-				this->power -= this->reproducePower;
 			}
 
 			if (this->powerLimit > this->power) {
@@ -51,4 +55,6 @@ class Plant : public Organism {
 
 			this->turnsSurvived++;
 		};
+
+		virtual ~Plant() {}
 };

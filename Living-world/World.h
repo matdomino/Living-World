@@ -27,9 +27,11 @@ private:
 			int position = y * sizeX + x;
 
 			if (positions.find(position) == positions.end()) {
-				std::list<Ancestor> newBloodLine;
+				std::list<Ancestor>* newBloodLine = new std::list<Ancestor>();;
 
 				Organism* newOrganism = new T(this, newBloodLine);
+
+				newBloodLine->push_back(Ancestor(newOrganism->getId(), this->turnNum, -1));;
 
 				this->map[y][x] = newOrganism;
 				positions.insert(position);
@@ -76,7 +78,26 @@ public:
 		return this->turnNum;
 	}
 
+	void removeOrganism(Organism* organism) {
+		for (auto& row : map) {
+			for (Organism*& currentOrganism : row) {
+				if (currentOrganism == organism) {
+					currentOrganism = nullptr;
+					return;
+				}
+			}
+		}
+	}
+
 	void simulateTurn() {
 		this->turnNum++;
+
+		for (auto& row : map) {
+			for (Organism* organism : row) {
+				if (organism != nullptr) {
+					organism->live();
+				}
+			}
+		}
 	}
 };

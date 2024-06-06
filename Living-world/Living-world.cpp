@@ -49,9 +49,9 @@ static void printWorld(const std::vector<std::vector<Organism*>>& map, int& turn
 }
 
 static void printAncestors (Organism* organism) {
-    std::list<Ancestor> ancestors = organism->getAncestors();
+    std::list<Ancestor>* ancestors = organism->getAncestors();
 
-    for (const Ancestor& ancestor : ancestors) {
+    for (const Ancestor& ancestor : *ancestors) {
         std::cout << "Organism ID: " << ancestor.organismId << std::endl;
         std::cout << "Birth Turn: " << ancestor.birthTurn << std::endl;
         std::cout << "Death Turn: " << ancestor.deathTurn << std::endl;
@@ -81,7 +81,7 @@ static void printDetails(const std::list<Organism*>& organisms) {
         std::advance(it, selected_index);
         std::cout << (*it)->getDetails();
         
-        std::cout << std::endl << "| Ancestors: " << std::endl;
+        std::cout << std::endl << "| Bloodline: " << std::endl << std::endl;
         printAncestors(*it);
     }
     else {
