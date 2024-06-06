@@ -9,10 +9,13 @@ class Organism {
 		int turnsSurvived = 0;
 		const int lifeSpan;
 		const std::string organismId;
+		int power = 0;
+		int reproducePower;
+		int powerLimit;
 		std::list<Ancestor>* ancestors;
 	public:
-		Organism(int givenLifeSpan, std::string givenOrganismId, std::list<Ancestor>* givenAncestors)
-			: lifeSpan(givenLifeSpan), organismId(givenOrganismId), ancestors(givenAncestors) {};
+		Organism(int givenLifeSpan, std::string givenOrganismId, std::list<Ancestor>* givenAncestors, int givenReproducePower, int givenPowerLimit)
+			: lifeSpan(givenLifeSpan), organismId(givenOrganismId), ancestors(givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit) {}
 
 		virtual char getChar() = 0;
 
@@ -45,9 +48,18 @@ class Organism {
 			}
 		}
 
-		virtual bool CanReproduce() = 0;
+		virtual bool CanReproduce() {
+			if (this->power >= this->reproducePower) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 
-		virtual void reproduced() = 0;
+		virtual void reproduced() {
+			this->power -= this->reproducePower;
+		}
 
 		virtual ~Organism() {}
 };

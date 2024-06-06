@@ -3,13 +3,10 @@
 
 class Plant : public Organism {
 	protected:
-		int power = 0;
-		int reproducePower;
-		int powerLimit; 
 		const bool isPoisonous;
 	public:
 		Plant(int givenLifeSpan, std::string givenOrganismId, std::list<Ancestor>* givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
-			: Organism(givenLifeSpan, givenOrganismId, givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit), isPoisonous(givenPoisonousStatus) {}
+			: Organism(givenLifeSpan, givenOrganismId, givenAncestors, givenReproducePower, givenPowerLimit), isPoisonous(givenPoisonousStatus) {}
 
 		virtual char getChar() = 0;
 
@@ -26,39 +23,11 @@ class Plant : public Organism {
 			return this->isPoisonous;
 		}
 
-		virtual bool IsDying(int turn) {
-			if (this->lifeSpan == this->turnsSurvived) {
-
-				for (auto& ancestor : *this->ancestors) {
-					if (ancestor.organismId == this->organismId) {
-						ancestor.deathTurn = turn;
-						break;
-					}
-				}
-
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		virtual bool CanReproduce() {
-			if (this->power >= this->reproducePower) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
 		virtual void live() {
 			if (this->powerLimit > this->power) {
 				power++;
 			}
 
 			this->turnsSurvived++;
-		}
-
-		virtual void reproduced() {
-			this->power -= this->reproducePower;
 		}
 };
