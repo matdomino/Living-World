@@ -2,6 +2,8 @@
 #include <vector>
 #include <ctime>
 #include <unordered_set>
+#include <algorithm>
+#include <random>
 #include "Organism.h"
 #include "Plant.h"
 #include "Grass.h"
@@ -47,20 +49,20 @@ private:
 		std::srand(static_cast<unsigned int>(std::time(0)));
 		std::unordered_set<int> positions;
 		int sizeY = map.size();
-		int sizeX = map[0].size();
+		int sizeX = map[0].size(); 
 
-		// addOrganism<Grass>(dandelionNum, positions, sizeX, sizeY);
-		// addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
-		// addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
-		// addOrganism<Sheep>(sheepNum, positions, sizeX, sizeY);
-		addOrganism<Wolf>(wolfNum, positions, sizeX, sizeY);
+		//<Grass>(dandelionNum, positions, sizeX, sizeY);
+		addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
+		//addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
+		addOrganism<Sheep>(sheepNum, positions, sizeX, sizeY);
+		//addOrganism<Wolf>(wolfNum, positions, sizeX, sizeY);
 	}
 
 public:
 	World(std::string name, int sizeY, int sizeX) {
 		this->worldName = name;
 		this->map.resize(sizeY, std::vector<Organism*>(sizeX, nullptr));
-		this->spawnOrganisms(5, 5, 4, 30, 3);
+		this->spawnOrganisms(5, 5, 4, 30, 4);
 	}
 
 	std::vector<std::vector<Organism*>>& getWorldMap() {
@@ -170,9 +172,29 @@ public:
 		}
 	}
 
+	void walk(int y, int x, Animal* animal) {
+		std::vector<std::pair<int, int>> directions = { {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} };
+
+		std::random_device rd;
+		std::mt19937 g(rd());
+		std::shuffle(directions.begin(), directions.end(), g);
+
+		for (const auto& direction : directions) {
+			int newY = y + direction.first;
+			int newX = x + direction.second;
+
+			if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size() && map[newY][newX] == nullptr) {
+				map[newY][newX] = animal;
+				map[y][x] = nullptr;
+				break;
+			}
+		}
+	}
+
 	void simulateTurn() {
 		this->turnNum++;
 		std::vector<std::pair<int, int>> toDelete;
+		std::vector<std::pair<int, int>> animals;
 
 		for (int y = 0; y < map.size(); y++) {
 			for (int x = 0; x < map[y].size(); x++) {
@@ -180,14 +202,25 @@ public:
 				if (organism != nullptr) {
 					if (organism->IsDying(this->turnNum)) {
 						toDelete.push_back({ y, x });
-					} else {
+					}
+					else {
 						if (organism->CanReproduce()) {
 							reproduce(y, x);
 						}
-
+						if (Animal* animal = dynamic_cast<Animal*>(map[y][x])) {
+							animals.push_back({ y, x });
+						}
 						organism->live();
 					}
 				}
+			}
+		}
+
+		for (const auto& pos : animals) {
+			int y = pos.first;
+			int x = pos.second;
+			if (Animal* animal = dynamic_cast<Animal*>(map[y][x])) {
+				walk(y, x, animal);
 			}
 		}
 
@@ -198,4 +231,5 @@ public:
 			map[y][x] = nullptr;
 		}
 	}
+
 };
