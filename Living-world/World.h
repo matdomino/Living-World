@@ -32,11 +32,11 @@ private:
 			int position = y * sizeX + x;
 
 			if (positions.find(position) == positions.end()) {
-				std::list<Ancestor>* newBloodLine = new std::list<Ancestor>();;
+				std::list<Ancestor>* newBloodLine = new std::list<Ancestor>();
 
 				Organism* newOrganism = new T(newBloodLine);
 
-				newBloodLine->push_back(Ancestor(newOrganism->getId(), this->turnNum, -1));;
+				newBloodLine->push_back(Ancestor(newOrganism->getId(), this->turnNum, -1));
 
 				this->map[y][x] = newOrganism;
 				positions.insert(position);
@@ -51,18 +51,18 @@ private:
 		int sizeY = map.size();
 		int sizeX = map[0].size(); 
 
-		//addOrganism<Grass>(dandelionNum, positions, sizeX, sizeY);
-		//addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
+		addOrganism<Grass>(dandelionNum, positions, sizeX, sizeY);
+		addOrganism<Dandelion>(grassNum, positions, sizeX, sizeY);
 		addOrganism<Toadstool>(toadstoolNum, positions, sizeX, sizeY);
 		addOrganism<Sheep>(sheepNum, positions, sizeX, sizeY);
-		//addOrganism<Wolf>(wolfNum, positions, sizeX, sizeY);
+		addOrganism<Wolf>(wolfNum, positions, sizeX, sizeY);
 	}
 
 public:
 	World(std::string name, int sizeY, int sizeX) {
 		this->worldName = name;
 		this->map.resize(sizeY, std::vector<Organism*>(sizeX, nullptr));
-		this->spawnOrganisms(5, 5, 10, 10, 10);
+		this->spawnOrganisms(5, 5, 10, 20, 20);
 	}
 
 	std::vector<std::vector<Organism*>>& getWorldMap() {
@@ -191,7 +191,7 @@ public:
 		}
 	}
 
-	void tryToEat(int y, int x, Animal* animal) {
+	bool tryToEat(int y, int x, Animal* animal) {
 		std::vector<std::pair<int, int>> directions = { {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} };
 
 		if (animal->getHerbivorousStatus()) {
@@ -207,11 +207,8 @@ public:
 						delete plant;
 						map[newY][newX] = nullptr;
 
-
-						// COS TU JEST NIE TAK
 						if (isAnimalPoisoned) {
-							delete animal;
-							map[y][x] = nullptr;
+							return true;
 						}
 						break;
 					}
@@ -237,6 +234,8 @@ public:
 				}
 			}
 		}
+
+		return false;
 	}
 
 	void simulateTurn() {
@@ -269,7 +268,11 @@ public:
 			int x = pos.second;
 			if (Animal* animal = dynamic_cast<Animal*>(map[y][x])) {
 				walk(y, x, animal);
-				tryToEat(y, x, animal);
+				bool diesOfPoison = tryToEat(y, x, animal);
+
+				if (diesOfPoison) {
+					toDelete.push_back({ y, x });
+				}
 			}
 		}
 
