@@ -12,7 +12,7 @@ public:
 	Grass() {}
 
 	Grass(std::list<Ancestor>* givenAncestors)
-		: Plant(5, ("Grass" + std::to_string(++this->idCounter)), givenAncestors, 2, 2, false) {}
+		: Plant(7, ("Grass" + std::to_string(++this->idCounter)), givenAncestors, 3, 3, false) {}
 
 	char getChar() {
 		return 'G';

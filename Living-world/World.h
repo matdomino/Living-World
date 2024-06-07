@@ -69,7 +69,7 @@ public:
 	World() {
 		this->worldName = "world";
 		this->map.resize(20, std::vector<Organism*>(20, nullptr));
-		this->spawnOrganisms(3, 3, 5, 20, 10);
+		this->spawnOrganisms(5, 5, 10, 22, 10);
 	}
 
 	World(std::string name, int sizeY, int sizeX) {
