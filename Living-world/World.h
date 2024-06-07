@@ -13,6 +13,13 @@
 #include "Animal.h"
 #include "Sheep.h"
 #include "Wolf.h"
+#include <fstream>
+
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
 
 inline int generateIndex(int min, int max) {
 	return min + rand() % (max - min + 1);
@@ -59,6 +66,12 @@ private:
 	}
 
 public:
+	World() {
+		this->worldName = "world";
+		this->map.resize(20, std::vector<Organism*>(20, nullptr));
+		this->spawnOrganisms(5, 5, 10, 20, 20);
+	}
+
 	World(std::string name, int sizeY, int sizeX) {
 		this->worldName = name;
 		this->map.resize(sizeY, std::vector<Organism*>(sizeX, nullptr));
@@ -284,4 +297,27 @@ public:
 		}
 	}
 
+	void save(const std::string& filename) {
+		std::ofstream ofs(filename);
+		boost::archive::text_oarchive oa(ofs);
+		oa << *this;
+	}
+
+	void load(const std::string& filename) {
+		std::ifstream ifs(filename);
+		boost::archive::text_iarchive ia(ifs);
+		ia >> *this;
+	}
+
+private:
+		friend class boost::serialization::access;
+		template <class Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& worldName;
+			ar& turnNum;
+			ar& map;
+		}
 };
+
+BOOST_CLASS_EXPORT_GUID(World, "World");

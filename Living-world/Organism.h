@@ -4,16 +4,23 @@
 #include <unordered_map>
 #include "Ancestor.h"
 
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/export.hpp>
+
 class Organism {
 	protected:
 		int turnsSurvived = 0;
-		const int lifeSpan;
-		const std::string organismId;
+		int lifeSpan;
+		std::string organismId;
 		int power = 0;
 		int reproducePower;
 		int powerLimit;
 		std::list<Ancestor>* ancestors;
 	public:
+		Organism() : lifeSpan(0),organismId("Ogranism1") {}
+
 		Organism(int givenLifeSpan, std::string givenOrganismId, std::list<Ancestor>* givenAncestors, int givenReproducePower, int givenPowerLimit)
 			: lifeSpan(givenLifeSpan), organismId(givenOrganismId), ancestors(givenAncestors), reproducePower(givenReproducePower), powerLimit(givenPowerLimit) {}
 
@@ -62,4 +69,20 @@ class Organism {
 		}
 
 		virtual ~Organism() {}
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& turnsSurvived;
+		ar& lifeSpan;
+		ar& organismId;
+		ar& power;
+		ar& reproducePower;
+		ar& powerLimit;
+		ar& ancestors;
+	}
 };
+
+
+BOOST_CLASS_EXPORT_GUID(Organism, "Organism");

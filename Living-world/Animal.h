@@ -1,6 +1,10 @@
 #pragma once
 #include "Organism.h"
 
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/export.hpp>
+
 class Animal : public Organism {
 	protected:
 		bool isHerbivorous;
@@ -8,6 +12,8 @@ class Animal : public Organism {
 		int hungerLevel;
 		int fullHungerLevel;
 	public:
+		Animal() : Organism() {}
+
 		Animal(int givenLifeSpan, std::string givenOrganismId, std::list<Ancestor>* givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenHerbStatus, bool givenCarnStatus, int givenFullHungerLevel)
 			: Organism(givenLifeSpan, givenOrganismId, givenAncestors, givenReproducePower, givenPowerLimit), isHerbivorous(givenHerbStatus), isCarnivorous(givenCarnStatus), hungerLevel(givenFullHungerLevel), fullHungerLevel(givenFullHungerLevel) {}
 
@@ -47,4 +53,17 @@ class Animal : public Organism {
 
 			this->turnsSurvived++;
 		}
+private:
+		friend class boost::serialization::access;
+		template <class Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& boost::serialization::base_object<Organism>(*this);
+			ar& isHerbivorous;
+			ar& isCarnivorous;
+			ar& hungerLevel;
+			ar& fullHungerLevel;
+		}
 };
+
+BOOST_CLASS_EXPORT_GUID(Animal, "Animal");

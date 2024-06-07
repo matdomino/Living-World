@@ -1,10 +1,16 @@
 #pragma once
 #include "Organism.h"
 
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/export.hpp>
+
 class Plant : public Organism {
 	protected:
-		const bool isPoisonous;
+		bool isPoisonous;
 	public:
+		Plant() : isPoisonous(0) {}
+
 		Plant(int givenLifeSpan, std::string givenOrganismId, std::list<Ancestor>* givenAncestors, int givenReproducePower, int givenPowerLimit, bool givenPoisonousStatus)
 			: Organism(givenLifeSpan, givenOrganismId, givenAncestors, givenReproducePower, givenPowerLimit), isPoisonous(givenPoisonousStatus) {}
 
@@ -30,4 +36,14 @@ class Plant : public Organism {
 
 			this->turnsSurvived++;
 		}
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& boost::serialization::base_object<Organism>(*this);
+		ar& isPoisonous;
+	}
 };
+
+BOOST_CLASS_EXPORT_GUID(Plant, "Plant");

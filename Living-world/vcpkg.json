@@ -1,0 +1,11 @@
+{
+  "dependencies": [
+    {
+      "name": "boost",
+      "version>=": "1.80.0",
+      "features": [
+        "serialization"
+      ]
+    }
+  ]
+}
