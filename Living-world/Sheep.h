@@ -12,7 +12,7 @@ public:
 	Sheep() {}
 
 	Sheep(std::list<Ancestor>* givenAncestors)
-		: Animal(8, ("Sheep" + std::to_string(++this->idCounter)), givenAncestors, 4, 8, 1, 0, 6) {}
+		: Animal(12, ("Sheep" + std::to_string(++this->idCounter)), givenAncestors, 4, 8, 1, 0, 6) {}
 
 	char getChar() {
 		return 'S';

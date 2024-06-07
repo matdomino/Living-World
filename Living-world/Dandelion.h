@@ -13,7 +13,7 @@ public:
 	Dandelion() {}
 
 	Dandelion(std::list<Ancestor>* givenAncestors)
-		: Plant(4, ("Dandelion" + std::to_string(++this->idCounter)), givenAncestors, 2, 4, false) {}
+		: Plant(5, ("Dandelion" + std::to_string(++this->idCounter)), givenAncestors, 2, 2, false) {}
 
 	char getChar() {
 		return 'D';

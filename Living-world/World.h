@@ -69,13 +69,13 @@ public:
 	World() {
 		this->worldName = "world";
 		this->map.resize(20, std::vector<Organism*>(20, nullptr));
-		this->spawnOrganisms(5, 5, 10, 20, 20);
+		this->spawnOrganisms(3, 3, 5, 20, 10);
 	}
 
 	World(std::string name, int sizeY, int sizeX) {
 		this->worldName = name;
 		this->map.resize(sizeY, std::vector<Organism*>(sizeX, nullptr));
-		this->spawnOrganisms(5, 5, 10, 20, 20);
+		this->spawnOrganisms(5, 5, 10, 20, 10);
 	}
 
 	std::vector<std::vector<Organism*>>& getWorldMap() {
@@ -280,11 +280,13 @@ public:
 			int y = pos.first;
 			int x = pos.second;
 			if (Animal* animal = dynamic_cast<Animal*>(map[y][x])) {
-				walk(y, x, animal);
 				bool diesOfPoison = tryToEat(y, x, animal);
 
 				if (diesOfPoison) {
 					toDelete.push_back({ y, x });
+				}
+				else {
+					walk(y, x, animal);
 				}
 			}
 		}
@@ -296,6 +298,7 @@ public:
 			map[y][x] = nullptr;
 		}
 	}
+
 
 	void save(const std::string& filename) {
 		std::ofstream ofs(filename);

@@ -112,7 +112,7 @@ int main()
 
     while (true) {
         clearScreen();
-        std::cout << "| Operations:   1. Simulate next turn.   2. Simulate next 10 turns.   3. Show organisms list.   4. Save game.   5. Load game.   4. Exit." << std::endl << std::endl;
+        std::cout << "| Operations:   1. Simulate next turn.   2. Simulate next 10 turns.   3. Show organisms list.   4. Save game.   5. Load game.   6. Exit." << std::endl << std::endl;
         printWorld(world.getWorldMap(), world.getTurnNum());
 
         std::cout << "Option: ";

@@ -12,7 +12,7 @@ public:
 	Wolf() {}
 
 	Wolf(std::list<Ancestor>* givenAncestors)
-		: Animal(8, ("Wolf" + std::to_string(++this->idCounter)), givenAncestors, 4, 8, 0, 1, 6) {}
+		: Animal(15, ("Wolf" + std::to_string(++this->idCounter)), givenAncestors, 6, 8, 0, 1, 6) {}
 
 	char getChar() {
 		return 'W';
